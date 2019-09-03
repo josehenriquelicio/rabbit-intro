@@ -1,0 +1,11 @@
+{
+  "name": "rabbit-intro",
+  "version": "0.0.1",
+  "description": "Intro to rabbitmq",
+  "main": "index.js",
+  "author": "jose & isabella",
+  "license": "none",
+  "dependencies": {
+    "amqplib": "^0.5.5"
+  }
+}
