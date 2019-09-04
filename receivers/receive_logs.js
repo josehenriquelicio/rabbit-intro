@@ -1,35 +1,28 @@
-const amqp = require('amqplib/callback_api');
+const amqp = require('amqplib');
 
-amqp.connect('amqp://localhost', function(error0, connection) {
-  if (error0) {
-    throw error0;
-  }
-  connection.createChannel(function(error1, channel) {
-    if (error1) {
-      throw error1;
-    }
-    var exchange = 'logs';
+async function main() {
+  let connection;
 
-    channel.assertExchange(exchange, 'fanout', {
-      durable: false
-    });
+  try {
+      connection = await amqp.connect('amqp://localhost');
+      const channel = await connection.createChannel();
+      const exchange = 'logs';
 
-    channel.assertQueue('', {
-      exclusive: true
-    }, function(error2, q) {
-      if (error2) {
-        throw error2;
-      }
-      console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q.queue);
+      await channel.assertExchange(exchange, 'fanout', { durable: false });
+      const q = await channel.assertQueue('', { exclusive: true });
+
+      console.log(`[*] Waiting for messages. To exit press CTRL+C`);
       channel.bindQueue(q.queue, exchange, '');
-
-      channel.consume(q.queue, function(msg) {
-        if(msg.content) {
-            console.log(" [x] %s", msg.content.toString());
+      channel.consume(q.queue, (msg) => {
+          if (msg.content) {
+            console.log(`[x] ${msg.content.toString()}`);
           }
-      }, {
-        noAck: true
-      });
-    });
-  });
-});
+      }, { noAck: true });
+  } catch (error) {
+      console.log('Error trying to connect to Rabbit server');
+      console.error(error)
+  }
+  // console.log('Program [receive.js] finished');
+}
+
+main()

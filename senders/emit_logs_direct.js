@@ -6,12 +6,13 @@ async function main() {
   try {
       connection = await amqp.connect('amqp://localhost');
       const channel = await connection.createChannel();
-      const exchange = 'logs';
+      const exchange = 'direct_logs';
 
-      await channel.assertExchange(exchange, 'fanout', { durable: false });
-      const msg = process.argv.slice(2).join(' ') || 'Hello World!';
-      channel.publish(exchange, '', Buffer.from(msg));
-      console.log(` [x] Sent: ${msg}`);
+      await channel.assertExchange(exchange, 'direct', { durable: false });
+      const msg = process.argv.slice(3).join(' ') || 'Hello World!';
+      let level = process.argv[2] || 'info';
+      channel.publish(exchange, level, Buffer.from(msg));
+      console.log(` [x] Sent: [${msg}] with level ${level}`);
   } catch (error) {
       console.log('Error trying to connect to Rabbit server');
       console.error(error)
@@ -21,7 +22,7 @@ async function main() {
             await connection.close();
             res();
         }, 500));
-        console.log('Program [emit_logs.js] finished');
+        console.log('Program [emit_logs_direct.js] finished');
     }
   }
 }
