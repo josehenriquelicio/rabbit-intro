@@ -20,13 +20,11 @@ async function main() {
       for(const topic in topics) {
         const q = await channel.assertQueue(topic, { exclusive: true });
         await channel.bindQueue(q.queue, exchange, `${main_topic}.${topic}`);
-      }
-      for (const topic of topics) {
-          channel.consume(topic, (msg) => {
+        channel.consume(q.queue, (msg) => {
             if (msg.content) {
                 console.log(` ---------- ${msg.fields.routingKey}: ---------- \n[x] ${msg.content.toString()}`);
             }
-          }, { noAck: true });          
+          }, { noAck: true });  
       }
       console.log(`[*] Waiting for messages. To exit press CTRL+C`);
   } catch (error) {
