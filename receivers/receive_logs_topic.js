@@ -15,7 +15,7 @@ async function main() {
       const channel = await connection.createChannel();
       const exchange = default_exchange;
 
-      await channel.assertExchange(exchange, 'topic', { durable: false });
+      await channel.assertExchange(exchange, 'topic', { durable: true });
 
       for(const topic in topics) {
         const q = await channel.assertQueue(topic, { exclusive: true });
