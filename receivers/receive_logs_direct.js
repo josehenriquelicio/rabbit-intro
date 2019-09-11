@@ -1,4 +1,6 @@
 const amqp = require('amqplib');
+const config = require('../config');
+const { host, port, default_queue } = config.rabbit;
 
 const timestamp = () => (new Date()).toISOString();
 const stamp = msg => `[${timestamp()}] ${msg}`;
