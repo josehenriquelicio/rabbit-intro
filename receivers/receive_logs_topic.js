@@ -17,7 +17,7 @@ async function main() {
 
       await channel.assertExchange(exchange, 'topic', { durable: true });
 
-      for(const topic in topics) {
+      for(const topic of topics) {
         const q = await channel.assertQueue(topic, { exclusive: true });
         console.log(`Queue ${q.queue} created`);
         await channel.bindQueue(q.queue, exchange, `${main_topic}.${topic}`).then(res => console.log(`Queue ${q.queue} bound to "${main_topic}.${topic}"`));
