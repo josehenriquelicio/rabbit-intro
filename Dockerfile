@@ -11,4 +11,4 @@ COPY . /opt/app
 
 RUN yarn
 
-CMD [ "node", "receivers/receive_logs_topic.js" ]
+CMD [ "node", "receivers/receive_logs_feed.js" ]
